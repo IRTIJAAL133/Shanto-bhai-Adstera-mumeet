@@ -1,67 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-520TEJ05JK"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-520TEJ05JK');
-</script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-520TEJ05JK"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-520TEJ05JK');
-</script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scrollable Landing Page - FAST</title>
-
-    <style>
-        /* CRITICAL CSS: Keep this lean for immediate render */
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden; /* Prevent body scrollbar */
-        }
-        .image-container {
-            height: 100vh;
-            width: 100vw;
-            overflow-y: scroll; 
-            scroll-snap-type: y mandatory;
-            -webkit-overflow-scrolling: touch; 
-        }
-        .full-image-section {
-            height: 100vh;
-            width: 100vw;
-            scroll-snap-align: start; 
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            position: relative;
-            /* Add a temporary background color until the image loads */
-            background-color: #f0f0f0; 
-        }
-    </style>
-</head>
-<body>
-    <div class="image-container" id="imageContainer">
-        <div class="full-image-section" id="section-1" data-section-index="0"></div>
-        <div class="full-image-section" id="section-2" data-section-index="1"></div>
-        <div class="full-image-section" id="section-3" data-section-index="2"></div>
-        <div class="full-image-section" id="section-4" data-section-index="3"></div>
-        <div class="full-image-section" id="section-5" data-section-index="4"></div>
-        <div class="full-image-section" id="section-6" data-section-index="5"></div>
-    </div>
-
-    <script>
         // --- 1. CONFIGURATION & REDIRECT CHECK ---
         const desktopURL = "https://www.msn.com/it-it";
         const mobileURL = "https://t.co/21Bu3LDwwY";
@@ -99,7 +36,6 @@
         }
 
         function preloadImage(url) {
-            // Preloads image into browser cache without displaying it yet
             const img = new Image();
             img.src = url;
         }
@@ -109,7 +45,6 @@
         const sections = document.querySelectorAll(".full-image-section");
         const SELECTED_IMAGE_URLS = getRandomImageUrls(4); 
         let currentSectionIndex = 0;
-        let imagesReady = false;
 
         // Apply random images to the sections
         sections.forEach((section, index) => {
@@ -117,42 +52,37 @@
             if (index < SELECTED_IMAGE_URLS.length) {
                 url = SELECTED_IMAGE_URLS[index];
             } else {
-                // Repeat the first image for sections 5 and 6
                 url = SELECTED_IMAGE_URLS[0]; 
             }
             
-            // Set the URL as a data attribute instead of applying the background image directly
             section.setAttribute('data-bg', url);
 
-            // Preload the first image immediately for fastest possible initial view
+            // Preload the first image immediately
             if (index === 0) {
                 preloadImage(url);
             }
         });
         
-        // Apply the first image's background after the DOM loads to avoid render-blocking
+        // Apply the first image's background after the DOM loads
         document.addEventListener('DOMContentLoaded', () => {
-             // The first image should be ready to apply due to the preload
              const firstSection = sections[0];
              const firstImageUrl = firstSection.getAttribute('data-bg');
              firstSection.style.backgroundImage = `url('${firstImageUrl}')`;
              
-             // Preload the rest of the images needed for this session while the user views the first page
+             // Preload the rest of the images needed for this session
              for(let i = 1; i < sections.length; i++) {
                  preloadImage(sections[i].getAttribute('data-bg'));
              }
-             imagesReady = true;
         });
 
         // --- 4. SCROLL AND REDIRECT LOGIC (Using Intersection Observer) ---
         
-        // Intersection Observer is much more performant than listening to the 'scroll' event.
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const newIndex = parseInt(entry.target.getAttribute('data-section-index'));
                     
-                    if (newIndex > currentSectionIndex) {
+                    if (newIndex >= currentSectionIndex) {
                         currentSectionIndex = newIndex;
                         
                         // Apply the background image when the section becomes visible (Lazy Load)
@@ -166,15 +96,12 @@
                             // Redirect!
                             window.location.href = mobileURL;
                         }
-                    } else {
-                        // Handle case where user scrolls back up (optional, but good practice)
-                        currentSectionIndex = newIndex;
-                    }
+                    } 
                 }
             });
         }, {
             root: document.querySelector('.image-container'),
-            threshold: 0.5 // Trigger when 50% of the section is visible
+            threshold: 0.5 
         });
 
         // Start observing all sections
@@ -182,14 +109,11 @@
             observer.observe(section);
         });
 
-        // --- 5. FALLBACK CLICK REDIRECT ---
+        // --- 5. FALLBACK CLICK REDIRECT (CORRECTED) ---
         
         document.getElementById("imageContainer").addEventListener("click", () => {
-             // Redirect immediately on click only if they haven't started scrolling
-             // This prevents "stuck" users and is a good high-intent signal.
-            if (currentSectionIndex === 0) {
-                 window.location.href = mobileURL;
-            }
+             // ACTION: Redirect the user immediately on click, regardless of scroll position.
+             window.location.href = mobileURL;
         });
     </script>
 </body>
