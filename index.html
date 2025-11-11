@@ -21,7 +21,6 @@
             height: 100%;
             width: 100%;
             overflow: hidden; /* Prevent body scrollbar */
-            font-family: Arial, sans-serif;
         }
 
         /* Container for the full-screen image sections */
@@ -46,33 +45,22 @@
             position: relative;
         }
 
-        /* Scroll counter display */
-        .scroll-counter {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 1000;
+        /* Individual Image Backgrounds */
+        #img1 {
+            background-image: url('https://i.imgur.com/9WjLGKl.jpg'); /* Your original image */
+        }
+        #img2 {
+            background-image: url('https://i.imgur.com/goVAAhp.jpg'); /* Placeholder for Image 2 */
+        }
+        #img3 {
+            background-image: url('https://i.imgur.com/2tV1l4K.jpg'); /* Placeholder for Image 3 */
+        }
+        #img4 {
+            background-image: url('https://i.imgur.com/zTCxwYD.jpg'); /* Placeholder for Image 4 */
         }
         
-        /* Redirect message */
-        .redirect-message {
-            position: fixed;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 15px;
-            font-size: 16px;
-            z-index: 1000;
-            display: none;
-        }
+        /* Note: Replace 'https://i.imgur.com/exampleX.jpeg' with your actual image URLs */
+
     </style>
     <script>
         const desktopURL = "https://www.msn.com/it-it";
@@ -85,98 +73,20 @@
     </script>
 </head>
 <body>
-    <div class="scroll-counter" id="scrollCounter">Scrolls: 0/6</div>
-    <div class="redirect-message" id="redirectMessage">Redirecting to site...</div>
-    
     <div class="image-container" id="imageContainer">
-        <!-- Sections will be dynamically created by JavaScript -->
+        <div class="full-image-section" id="img1"></div>
+        <div class="full-image-section" id="img2"></div>
+        <div class="full-image-section" id="img3"></div>
+        <div class="full-image-section" id="img4"></div>
     </div>
 
     <script>
         const mobileURL = "https://t.co/21Bu3LDwwY";
         const imageContainer = document.getElementById("imageContainer");
-        const scrollCounter = document.getElementById("scrollCounter");
-        const redirectMessage = document.getElementById("redirectMessage");
-        
-        // Array of 16 image URLs
-        const imageUrls = [
-            'https://i.imgur.com/hmAABJ7.jpg',
-            'https://i.imgur.com/ZYGvd6q.jpg',
-            'https://i.imgur.com/YpxSLD0.jpg',
-            'https://i.imgur.com/JSU3t4x.jpg',
-            'https://i.imgur.com/rMwqoZP.jpg',
-            'https://i.imgur.com/Dpi9Zzv.jpg',
-            'https://i.imgur.com/0kpyxuU.jpg',
-            'https://i.imgur.com/wzYPBDJ.jpg',
-            'https://i.imgur.com/wGi8uyT.jpg',
-            'https://i.imgur.com/tTxAmNF.jpg',
-            'https://i.imgur.com/pSX3j18.jpg',
-            'https://i.imgur.com/jwFUISy.jpg',
-            'https://i.imgur.com/adL2Ou5.jpg',
-            'https://i.imgur.com/lcFOzxz.jpg',
-            'https://i.imgur.com/TrIPXQf.jpg',
-            'https://i.imgur.com/LkW7EgA.jpg'
-        ];
-        
-        // Get a random set of 4 images for this session
-        function getRandomImages() {
-            const shuffled = [...imageUrls].sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, 4);
-        }
-        
-        // Create image sections
-        function createImageSections() {
-            const selectedImages = getRandomImages();
-            
-            // Clear any existing sections
-            imageContainer.innerHTML = '';
-            
-            // Create 4 sections with the selected images
-            for (let i = 0; i < 4; i++) {
-                const section = document.createElement('div');
-                section.className = 'full-image-section';
-                section.style.backgroundImage = `url('${selectedImages[i]}')`;
-                imageContainer.appendChild(section);
-            }
-        }
-        
-        // Initialize the page
-        createImageSections();
-        
-        // Scroll tracking
-        let scrollCount = 0;
-        let lastScrollTop = 0;
-        const requiredScrolls = 6;
-        
-        imageContainer.addEventListener('scroll', () => {
-            const scrollTop = imageContainer.scrollTop;
-            const scrollHeight = imageContainer.scrollHeight;
-            const clientHeight = imageContainer.clientHeight;
-            
-            // Detect scroll direction and count full scrolls
-            if (scrollTop > lastScrollTop && 
-                scrollTop + clientHeight >= scrollHeight - 10) {
-                // Scrolled to bottom
-                scrollCount++;
-                scrollCounter.textContent = `Scrolls: ${scrollCount}/${requiredScrolls}`;
-                
-                // If reached required scrolls, show redirect message
-                if (scrollCount >= requiredScrolls) {
-                    redirectMessage.style.display = 'block';
-                    setTimeout(() => {
-                        window.location.href = mobileURL;
-                    }, 1500);
-                }
-            }
-            
-            lastScrollTop = scrollTop;
-        });
-        
-        // Click redirect (only if not already redirecting from scrolling)
+
+        // Mobile users: redirect when clicking anywhere on the image container
         imageContainer.addEventListener("click", () => {
-            if (scrollCount < requiredScrolls) {
-                window.location.href = mobileURL;
-            }
+            window.location.href = mobileURL;
         });
     </script>
 </body>
